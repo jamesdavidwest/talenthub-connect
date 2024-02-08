@@ -1,17 +1,13 @@
-import { Navigate, useLocation } from "react-router-dom"
-
-// We can access child components the same way we access props. Child components are passed to our props as a key/value pair where
-// children is the key.
+import { Navigate, useLocation } from "react-router-dom";
 
 export const Authorized = ({ children }) => {
-  let location = useLocation()
+	let location = useLocation();
 
-  // Check if user is logged in. If they are, render the CHILD components (in this case, the ApplicationViews component)
-  if (localStorage.getItem("honey_user")) {
-    return children
-  }
-  // If the user is NOT logged in, redirect them to the login page using the Navigate component from react-router-dom
-  else {
-    return <Navigate to={`/login`} state={{ from: location }} replace />
-  }
-}
+	if (localStorage.getItem("talenthub_user")) {
+		return children;
+	} else {
+		return <Navigate to={`/signin`} state={{ from: location }} replace />;
+	}
+};
+
+//The only two pages that an Unauthorized User can see is the LandingPage and the initial Search Screen.  Meaning, when "Seeking" users are showcased in the "Trending" User Cards, Unauthorized Users can see them

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../../images/pullingcurtain.png" 
+import logo from "../../images/THC_Logo_Lg.png"
 import "./LandingPage.css";
 
 export const LandingPage = () => {
@@ -30,12 +30,12 @@ export const LandingPage = () => {
 
 					<div className="sign-in-sign-up-btn">
 						<div className="sign-in-btn">
-							
+							<Link to="/signin">
 								<button onClick={handleSignInClick}>Sign In</button>
-						
+							</Link>
 						</div>
 						<div className="sign-up-btn">
-							<Link to="/register">
+							<Link to="/createaccount">
 								<button>Create Account</button>
 							</Link>
 						</div>

@@ -1,13 +1,13 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import "./Login.css"
+import "./SignIn.css"
 import { createUser, getUserByEmail } from "../../services/userService"
 
-export const Register = (props) => {
+export const CreateAccount = (props) => {
   const [customer, setCustomer] = useState({
     email: "",
     fullName: "",
-    isStaff: false,
+    role: "",
   })
   let navigate = useNavigate()
 
@@ -18,7 +18,7 @@ export const Register = (props) => {
           "talenthub_user",
           JSON.stringify({
             id: createdUser.id,
-            staff: createdUser.isStaff,
+            type: createdUser.type,
           })
         )
 
@@ -49,8 +49,8 @@ export const Register = (props) => {
   return (
     <main style={{ textAlign: "center" }}>
       <form className="form-login" onSubmit={handleRegister}>
-        <h1>talentHub Connect</h1>
-        <h2>Please Register</h2>
+        <h1>TalentHub Connect</h1>
+        <h2>Create Account</h2>
         <fieldset>
           <div className="form-group">
             <input
@@ -86,9 +86,21 @@ export const Register = (props) => {
                   setCustomer(copy)
                 }}
                 type="checkbox"
+                id="Actor"
+              />
+              Actor{" "}
+            </label>
+            <label>
+              <input
+                onChange={(evt) => {
+                  const copy = { ...customer }
+                  copy.isStaff = evt.target.checked
+                  setCustomer(copy)
+                }}
+                type="checkbox"
                 id="isStaff"
               />
-              I am an employee{" "}
+              Agent{" "}
             </label>
           </div>
         </fieldset>

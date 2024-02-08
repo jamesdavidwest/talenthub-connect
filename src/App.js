@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Search } from "./components/search/Search.js";
 import { NavBar } from "./components/nav/NavBar.js";
 import { LandingPage } from "./components/landingpage/LandingPage.js";
 import { Dashboard } from "./views/Dashboard.js";
-import "./App.css";
+import { SignIn } from "./components/auth/SignIn.js";
+import { CreateAccount } from "./components/auth/CreateAccount.js";
+
+
 
 export const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,7 +23,7 @@ export const App = () => {
 	return (
 		<div>
 			<NavBar isLoggedIn={isLoggedIn} onLogout={handleLogout} />
-      <BrowserRouter>
+
 			<Routes>
 				<Route
 					path="/"
@@ -28,8 +31,10 @@ export const App = () => {
 				/>
 				<Route path="/dashboard" element={<Dashboard />} />
 				<Route path="/search" element={<Search />} />
+				<Route path="/signin" element={<SignIn />} />
+				<Route path="/createaccount" element={<CreateAccount />} />
 			</Routes>
-      </BrowserRouter>
+
 		</div>
 	);
 };

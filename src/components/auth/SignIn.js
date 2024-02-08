@@ -1,31 +1,42 @@
 import React, { useState } from "react"
-import { Link } from "react-router-dom"
-import { useNavigate } from "react-router-dom"
-import "./Login.css"
+import { Link, useNavigate } from "react-router-dom"
+import "./SignIn.css"
 import { getUserByEmail } from "../../services/userService"
 
-export const Login = () => {
-  const [email, set] = useState("jamesdavidwest@actor.com")
+export const SignIn = () => {
+  const [email, setEmail] = useState("jamesdavidwest@actor.com")//jamesdavidwest@actor.com
+  const [errorMessage, setErrorMessage] = useState("")
   const navigate = useNavigate()
 
   const handleLogin = (e) => {
     e.preventDefault()
 
-    getUserByEmail(email).then((foundUsers) => {
-      if (foundUsers.length === 1) {
+    if (!email) {
+      setErrorMessage("Please Enter Your Email Address")
+      return
+    }
+
+    getUserByEmail(email)
+      .then((foundUsers) => {
+        if (foundUsers.length === 1) {
         const user = foundUsers[0]
         localStorage.setItem(
           "talenthub_user",
           JSON.stringify({
             id: user.id,
-            isActor: user.isActor,
+            type: user.type,
           })
         )
-
-        navigate("/")
+        
+        const previousLocation = localStorage.getItem("previousLocation")
+        navigate(previousLocation || "/dashboard")
       } else {
-        window.alert("Invalid login")
+        setErrorMessage("Invalid Login Credentials")
       }
+    })
+    .catch((error) => {
+      console.error("Login failed:", error)
+      setErrorMessage("An error occured during login. Please try again later.")
     })
   }
 
@@ -40,7 +51,7 @@ export const Login = () => {
               <input
                 type="email"
                 value={email}
-                onChange={(evt) => set(evt.target.value)}
+                onChange={(evt) => setEmail(evt.target.value)}
                 className="form-control"
                 placeholder="Email address"
                 required
