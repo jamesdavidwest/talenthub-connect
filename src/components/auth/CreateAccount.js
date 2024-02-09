@@ -1,117 +1,126 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import "./SignIn.css"
-import { createUser, getUserByEmail } from "../../services/userService"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./SignIn.css";
+import { createUser, getUserByEmail } from "../../services/userService";
 
-export const CreateAccount = (props) => {
-  const [customer, setCustomer] = useState({
-    email: "",
-    fullName: "",
-    role: "",
-  })
-  let navigate = useNavigate()
+export const CreateAccount = ({ setIsLoggedIn }) => {
+	const [user, setUser] = useState({
+		id: "",
+		market_id: "",
+		state_id: "",
+		userType: "",
+		fullName: "",
+		gender: "",
+		email: "",
+		headshot_url: "",
+		bio: "",
+		primary_focus: "",
+		seeking: "",
+		union_status: "",
+	});
 
-  const registerNewUser = () => {
-    createUser(customer).then((createdUser) => {
-      if (createdUser.hasOwnProperty("id")) {
-        localStorage.setItem(
-          "talenthub_user",
-          JSON.stringify({
-            id: createdUser.id,
-            type: createdUser.type,
-          })
-        )
+	const navigate = useNavigate();
 
-        navigate("/")
-      }
-    })
-  }
+	const registerNewUser = () => {
+		createUser(user).then((createdUser) => {
+			if (createdUser.hasOwnProperty("id")) {
+				localStorage.setItem(
+					"talenthub_user",
+					JSON.stringify({
+						id: createdUser.id,
+						type: createdUser.type,
+					})
+				);
 
-  const handleRegister = (e) => {
-    e.preventDefault()
-    getUserByEmail(customer.email).then((response) => {
-      if (response.length > 0) {
-        // Duplicate email. No good.
-        window.alert("Account with that email address already exists")
-      } else {
-        // Good email, create user.
-        registerNewUser()
-      }
-    })
-  }
+				setIsLoggedIn(true);
+				navigate("/dashboard");
+			}
+		});
+	};
 
-  const updateCustomer = (evt) => {
-    const copy = { ...customer }
-    copy[evt.target.id] = evt.target.value
-    setCustomer(copy)
-  }
+	const handleRegister = (e) => {
+		e.preventDefault();
+		getUserByEmail(user.email).then((response) => {
+			if (response.length > 0) {
+				// Duplicate email. No good.
+				window.alert("Account with that email address already exists");
+			} else {
+				// Good email, create user.
+				registerNewUser();
+			}
+		});
+	};
 
-  return (
-    <main style={{ textAlign: "center" }}>
-      <form className="form-login" onSubmit={handleRegister}>
-        <h1>TalentHub Connect</h1>
-        <h2>Create Account</h2>
-        <fieldset>
-          <div className="form-group">
-            <input
-              onChange={updateCustomer}
-              type="text"
-              id="fullName"
-              className="form-control"
-              placeholder="Enter your name"
-              required
-              autoFocus
-            />
-          </div>
-        </fieldset>
-        <fieldset>
-          <div className="form-group">
-            <input
-              onChange={updateCustomer}
-              type="email"
-              id="email"
-              className="form-control"
-              placeholder="Email address"
-              required
-            />
-          </div>
-        </fieldset>
-        <fieldset>
-          <div className="form-group">
-            <label>
-              <input
-                onChange={(evt) => {
-                  const copy = { ...customer }
-                  copy.isStaff = evt.target.checked
-                  setCustomer(copy)
-                }}
-                type="checkbox"
-                id="Actor"
-              />
-              Actor{" "}
-            </label>
-            <label>
-              <input
-                onChange={(evt) => {
-                  const copy = { ...customer }
-                  copy.isStaff = evt.target.checked
-                  setCustomer(copy)
-                }}
-                type="checkbox"
-                id="isStaff"
-              />
-              Agent{" "}
-            </label>
-          </div>
-        </fieldset>
-        <fieldset>
-          <div className="form-group">
-            <button className="login-btn btn-info" type="submit">
-              Register
-            </button>
-          </div>
-        </fieldset>
-      </form>
-    </main>
-  )
-}
+	const updateUser = (evt) => {
+		const copy = { ...user };
+		if (evt.target.name === "userType") {
+			copy.userType = evt.target.value;
+		} else {
+			copy[evt.target.id] = evt.target.value;
+		}
+		setUser(copy);
+	};
+
+	return (
+		<main style={{ textAlign: "center" }}>
+			<form className="form-login" onSubmit={handleRegister}>
+				<h1>TalentHub Connect</h1>
+				<h2>Create Account</h2>
+				<fieldset>
+					<div className="form-group">
+						<input
+							onChange={updateUser}
+							type="text"
+							id="fullName"
+							className="form-control"
+							placeholder="Enter your name"
+							required
+							autoFocus
+						/>
+					</div>
+				</fieldset>
+				<fieldset>
+					<div className="form-group">
+						<input
+							onChange={updateUser}
+							type="email"
+							id="email"
+							className="form-control"
+							placeholder="Email address"
+							required
+						/>
+					</div>
+				</fieldset>
+				<fieldset>
+					<div className="form-group">
+						<label>
+							<input
+								onChange={updateUser}
+								type="radio"
+								name="userType"
+								value="Actor"
+							/>
+							Actor{" "}
+						</label>
+						<label>
+							<input
+								onChange={updateUser}
+								type="radio"
+								name="userType"
+								value="Agent"
+							/>
+							Agent{" "}
+						</label>
+					</div>
+				</fieldset>
+				<fieldset>
+					<div className="form-group">
+						<button className="login-btn btn-info" type="submit">
+							Create Account
+						</button>
+					</div>
+				</fieldset>
+			</form>
+		</main>
+	);
+};

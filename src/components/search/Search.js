@@ -46,7 +46,7 @@ export const Search = () => {
 					return (
 						<section key={userCard.id} className="user-card">
 							<div className="user-thumbnail">
-								<h3 className="user-card-name">{userCard.name}</h3>
+								<h3 className="user-card-name">{userCard.fullName}</h3>
 
 								<img
 									className="search-headshot"

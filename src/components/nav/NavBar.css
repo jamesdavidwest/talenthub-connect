@@ -1,6 +1,6 @@
 nav {
     
-    padding: 20px 0 20px 0;
+    padding: 20px 0;
   }
   
   li {
@@ -26,14 +26,14 @@ nav {
   
   .navbar-links {
     list-style: none; 
-    display: flex;
-    list-style-type: none;
     padding: 0;
     margin: 0;
-    display: flex;
     justify-content: flex-end; 
+    display: flex;
   }
   
+
+
   .navbar-links li {
     margin-right: 20px;
   }

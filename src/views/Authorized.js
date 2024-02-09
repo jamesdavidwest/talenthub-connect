@@ -6,7 +6,7 @@ export const Authorized = ({ children }) => {
 	if (localStorage.getItem("talenthub_user")) {
 		return children;
 	} else {
-		return <Navigate to={`/signin`} state={{ from: location }} replace />;
+		return <Navigate to="/signin" state={{ from: location }} replace />;
 	}
 };
 

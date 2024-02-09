@@ -4,7 +4,7 @@ import "./LandingPage.css";
 
 export const LandingPage = () => {
 	 const handleSignInClick = () => {
-		<Link to="/login"></Link>
+		<Link to="/signin"></Link>
 	 }
 
 	return (
