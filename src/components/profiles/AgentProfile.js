@@ -1,4 +1,4 @@
-import "./AgentProfile.css"
+import "./AgentProfile.css";
 import { useEffect, useState } from "react";
 
 export const AgentProfile = ({ user, database }) => {

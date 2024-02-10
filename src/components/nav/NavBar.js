@@ -1,12 +1,33 @@
 import { Link } from "react-router-dom";
 import "./NavBar.css";
+import { useEffect, useState } from "react";
+import { getUserById } from "../../services/userService";
 
-export const NavBar = ({ isLoggedIn, onLogout, userType }) => {
+export const NavBar = ({ isLoggedIn, onLogout, userId }) => {
+	const [fullName, setFullName] = useState("");
+
+	useEffect(() => {
+		if (isLoggedIn) {
+			getUserFullName(userId);
+		}
+	}, [isLoggedIn, userId]);
+
+	const getUserFullName = (userId) => {
+		getUserById(userId)
+			.then((user) => {
+				if (user) {
+					setFullName(user.fullName);
+				}
+			})
+			.catch((error) => {
+				console.error("Error fetching user data:", error);
+			});
+	};
 	const renderAuthLinks = () => {
 		return (
 			<>
 				<li className="navbar-links">
-					<Link to="/userprofile">Profile</Link>
+					<Link to={`/userprofile/${userId}`}>Profile</Link>
 				</li>
 				<li className="navbar-links">
 					<Link to="/dashboard">Dashboard</Link>
