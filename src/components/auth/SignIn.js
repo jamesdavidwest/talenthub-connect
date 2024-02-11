@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./SignIn.css";
 import { getUserByEmail } from "../../services/userService";
 
-export const SignIn = ({onLogin}) => {
-	const [email, setEmail] = useState("jamesdavidwest@actor.com"); 
+export const SignIn = ({ onLogin }) => {
+	const [email, setEmail] = useState("jamesdavidwest@actor.com");
+
 	// eslint-disable-next-line no-unused-vars
 	const [errorMessage, setErrorMessage] = useState("");
+
 	const navigate = useNavigate();
 
 	const handleLogin = (e) => {
@@ -44,6 +46,16 @@ export const SignIn = ({onLogin}) => {
 				);
 			});
 	};
+
+	useEffect(() => {
+		const isLoggedIn = localStorage.getItem("talenthub_user");
+		const isSignInPage = (window.location.pathname === "/signin");
+
+		if (isLoggedIn && !isSignInPage) {
+			const previousLocation = localStorage.getItem("previousLocation");
+			navigate(previousLocation || "/dashboard");
+		}
+	}, [navigate]);
 
 	return (
 		<main className="container-login">

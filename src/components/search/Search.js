@@ -68,7 +68,7 @@ export const Search = () => {
 									<li>
 										Primary Focus: {userCard.primary_focus}
 									</li>
-									<li>Market: {userCard.market.name}</li>
+									<li>Market: {userCard.market?.name}</li>
 									<li>
 										Union Status: {userCard.union_status}
 									</li>

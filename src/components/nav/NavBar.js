@@ -27,7 +27,7 @@ export const NavBar = ({ isLoggedIn, onLogout, userId }) => {
 		return (
 			<>
 				<li className="navbar-links">
-					<Link to={`/userprofile/${userId}`}>Profile</Link>
+					<Link to={`/userprofile/${userId}`}>{fullName && <span>{fullName}'s </span>}Profile</Link>
 				</li>
 				<li className="navbar-links">
 					<Link to="/dashboard">Dashboard</Link>

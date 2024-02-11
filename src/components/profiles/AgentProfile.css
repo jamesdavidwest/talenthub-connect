@@ -1,0 +1,87 @@
+.agent-profile {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--white);
+    border: 1px solid black;
+    margin: 0.5rem 0;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    min-width: 600px;
+    max-width: 1200px;
+}
+
+.agent-headshot {
+    height: 150px;
+    width: 150px;
+    object-fit: cover;
+}
+
+.agent-thumbnail {
+    align-items: center;
+    width: 200px;
+}
+
+.agent-profile-details {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+}
+
+.agent-button {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+.agent-button:hover {
+    background-color: darkblue;
+}
+
+.agent-container {
+    display: flex;
+    margin: auto ;
+    align-self: center;
+    justify-content: center;
+    max-width: 1200px;
+    padding: 8px;
+}
+
+.agent-container > h2 {
+    margin-top: 0;
+}
+
+.agent-details {
+    display: flex;
+    border: 2px solid black;
+}
+
+.agent-details > * {
+    padding: 0.5rem;
+}
+
+.agent-info {
+    min-width: 200px;
+    align-self: center;
+    justify-content: center;
+}
+
+.agent-name {
+    display: flex;
+    margin: 0 0 10px 0;
+}
+
+.agent-footer {
+    display: flex;
+}
+
+.agent-footer > * {
+    flex-basis: 22%;
+}
+
+.agent-seeking {
+    display: flex;
+    padding: 0 8px 0 8px;
+}

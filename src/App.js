@@ -9,6 +9,8 @@ import { SignOut } from "./components/auth/SignOut.js";
 import { CreateAccount } from "./components/auth/CreateAccount.js";
 import { UserProfile } from "./components/profiles/UserProfile.js";
 import { getUserByEmail } from "./services/userService.js";
+import { Messaging } from "./components/messaging/Messaging.js";
+import { EditUserProfile } from "./components/profiles/EditUserProfile.js"
 
 export const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -61,6 +63,7 @@ export const App = () => {
 				<Route path="/" element={<LandingPage />} />
 				<Route path="/dashboard" element={<Dashboard />} />
 				<Route path="/search" element={<Search />} />
+				<Route path="/messages" element={<Messaging />} />
 				<Route
 					path="/signin"
 					element={<SignIn onLogin={handleLogin} />}
@@ -78,6 +81,7 @@ export const App = () => {
 						element={<UserProfile user={loggedInUser} />}
 					/>
 				</Route>
+				<Route path="/editprofile/:userId" element={<EditUserProfile />} />
 				<Route path="/" element={<SignOut />} />
 			</Routes>
 		</div>

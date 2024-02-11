@@ -1,0 +1,85 @@
+.actor-profile {
+    display: flex;
+    background-color: var(--white);
+    border: 1px solid black;
+    margin: 0.5rem 0;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    min-width: 600px;
+    max-width: 1200px;
+}
+
+.headshot-image {
+    width: 300px;
+    object-fit: cover;
+}
+
+.actor-profile-details {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    flex: 1; /* This ensures the details take up remaining space */
+}
+
+.actor-thumbnail {
+    align-items: center;
+    width: 200px;
+}
+.actor-button {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+.actor-button:hover {
+    background-color: darkblue;
+}
+
+.actor-container {
+    display: flex;
+    margin: auto ;
+    align-self: center;
+    justify-content: center;
+    max-width: 1200px;
+    padding: 8px;
+}
+
+.actor-container > h2 {
+    margin-top: 0;
+}
+
+.actor-details {
+    display: flex;
+    border: 2px solid black;
+}
+
+.actor-details > * {
+    padding: 0.5rem;
+}
+
+.actor-info {
+    min-width: 200px;
+    align-self: center;
+    justify-content: center;
+}
+
+.actor-name {
+    display: flex;
+    margin: 0 0 10px 0;
+}
+
+.actor-footer {
+    display: flex;
+}
+
+.actor-footer > * {
+    flex-basis: 22%;
+}
+
+.actor-seeking {
+    display: flex;
+    padding: 0 8px 0 8px;
+}
