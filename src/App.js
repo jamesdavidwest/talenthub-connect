@@ -10,7 +10,7 @@ import { CreateAccount } from "./components/auth/CreateAccount.js";
 import { UserProfile } from "./components/profiles/UserProfile.js";
 import { getUserByEmail } from "./services/userService.js";
 import { Messaging } from "./components/messaging/Messaging.js";
-import { EditUserProfile } from "./components/profiles/EditUserProfile.js"
+import { EditUserProfile } from "./components/profiles/EditUserProfile.js";
 
 export const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -48,41 +48,25 @@ export const App = () => {
 		setUserType("");
 		setLoggedInUser(null);
 		localStorage.removeItem("loggedInUserEmail");
+		navigate("/signin");
 	};
 
 	return (
 		<div>
-			<NavBar
-				isLoggedIn={isLoggedIn}
-				onLogout={handleLogout}
-				userType={userType}
-				userId={loggedInUser ? loggedInUser.id : null}
-			/>
+			<NavBar isLoggedIn={isLoggedIn} onLogout={handleLogout} user={user} userId={loggedInUser ? loggedInUser.id : null} />
 
 			<Routes>
 				<Route path="/" element={<LandingPage />} />
-				<Route path="/dashboard" element={<Dashboard />} />
+				<Route path="/dashboard" element={<Dashboard userId={loggedInUser ? loggedInUser.id : null} />} />
 				<Route path="/search" element={<Search />} />
 				<Route path="/messages" element={<Messaging />} />
-				<Route
-					path="/signin"
-					element={<SignIn onLogin={handleLogin} />}
-				/>
-				<Route
-					path="/createaccount"
-					element={<CreateAccount setIsLoggedIn={setIsLoggedIn} />}
-				/>
-				<Route
-					path="/userprofile"
-					element={<UserProfile user={loggedInUser} />}
-				>
-					<Route
-						path=":userId"
-						element={<UserProfile user={loggedInUser} />}
-					/>
+				<Route path="/signin" element={<SignIn onLogin={handleLogin} />} />
+				<Route path="/createaccount" element={<CreateAccount setIsLoggedIn={setIsLoggedIn} />} />
+				<Route path="/userprofile" element={<UserProfile user={loggedInUser} />}>
+					<Route path=":userId" element={<UserProfile user={loggedInUser} />} />
 				</Route>
-				<Route path="/editprofile/:userId" element={<EditUserProfile />} />
-				<Route path="/" element={<SignOut />} />
+				<Route path="/editprofile/:userId" element={<EditUserProfile userData={loggedInUser} />} />
+				<Route path="/signout" element={<SignOut />} />
 			</Routes>
 		</div>
 	);

@@ -67,12 +67,14 @@ export const SignIn = ({ onLogin }) => {
 						<div className="form-group">
 							<input
 								type="email"
+								id="email"
 								value={email}
 								onChange={(evt) => setEmail(evt.target.value)}
 								className="form-control"
 								placeholder="Email address"
 								required
 								autoFocus
+								autoComplete="email"
 							/>
 						</div>
 					</fieldset>

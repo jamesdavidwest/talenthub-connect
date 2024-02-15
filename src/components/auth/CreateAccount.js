@@ -8,7 +8,7 @@ export const CreateAccount = ({ setIsLoggedIn }) => {
 		id: "",
 		market_id: "",
 		state_id: "",
-		userType: "",
+		type_id: "",
 		fullName: "",
 		gender: "",
 		email: "",
@@ -53,8 +53,8 @@ export const CreateAccount = ({ setIsLoggedIn }) => {
 
 	const updateUser = (evt) => {
 		const copy = { ...user };
-		if (evt.target.name === "userType") {
-			copy.userType = evt.target.value;
+		if (evt.target.name === "type_id") {
+			copy.type_id = evt.target.value;
 		} else {
 			copy[evt.target.id] = evt.target.value;
 		}
@@ -97,7 +97,7 @@ export const CreateAccount = ({ setIsLoggedIn }) => {
 							<input
 								onChange={updateUser}
 								type="radio"
-								name="userType"
+								name="type_id"
 								value="Actor"
 							/>
 							Actor{" "}
@@ -106,7 +106,7 @@ export const CreateAccount = ({ setIsLoggedIn }) => {
 							<input
 								onChange={updateUser}
 								type="radio"
-								name="userType"
+								name="type_id"
 								value="Agent"
 							/>
 							Agent{" "}

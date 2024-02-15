@@ -39,7 +39,7 @@ export const NavBar = ({ isLoggedIn, onLogout, userId }) => {
 					<Link to="/messages">Messages</Link>
 				</li>
 				<li className="navbar-links">
-					<Link to="/" onClick={onLogout}>
+					<Link to="/signout" onClick={onLogout}>
 						Sign Out
 					</Link>
 				</li>

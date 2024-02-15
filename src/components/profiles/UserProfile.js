@@ -7,27 +7,25 @@ import { useEffect, useState } from "react";
 // Make sure to pass the database prop to UserProfile component
 // <UserProfile user={user} database={database}
 
-export const UserProfile = ({ database }) => {
+export const UserProfile = (database) => {
 	const { userId } = useParams();
 	const [user, setUser] = useState(null);
 
-	// eslint-disable-next-line no-unused-vars
-	const [error, setError] = useState(null);
-
 	useEffect(() => {
-	
+		fetchUserData(userId);
+	}, [userId]);
+
+	const fetchUserData = (userId) => {
 		getUserById(userId)
 			.then((userData) => {
 				console.log("User Data:", userData);
+
 				setUser(userData);
 			})
 			.catch((error) => {
 				console.error("Error fetching user data:", error);
-				setError("Error fetching user data. Please try again later.");
 			});
-	}, [userId]);
-
-
+	};
 
 	return (
 		<div className="user-profile">
@@ -40,7 +38,7 @@ export const UserProfile = ({ database }) => {
 					) : (
 						<p>No profile type found for user.</p>
 					)}
-					<Link to={`/editprofile/${userId}`}>Edit Profile</Link>
+					<Link to={`/editprofile/${userId}`} state={{ user }}>Edit Profile</Link>
 				</div>
 			) : null}
 		</div>
