@@ -14,20 +14,21 @@ import { EditUserProfile } from "./components/profiles/EditUserProfile.js";
 
 export const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	const [userType, setUserType] = useState("");
+	// const [userType, setUserType] = useState("");
 	const [loggedInUser, setLoggedInUser] = useState(null);
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		const userEmail = localStorage.getItem("loggedInUserEmail");
+
 		if (userEmail) {
 			getUserByEmail(userEmail)
 				.then((users) => {
-					if (users.length > 0) {
-						const userData = users[0];
-						setLoggedInUser(userData);
+					if (users.length > 0) {;
+						setLoggedInUser(users[0]);
+						
 						setIsLoggedIn(true);
-						setUserType(userData.type);
+						// setUserType(userData.type);
 					}
 				})
 				.catch((error) => {
@@ -38,14 +39,14 @@ export const App = () => {
 
 	const handleLogin = (userData) => {
 		setIsLoggedIn(true);
-		setUserType(userData.type);
+		// setUserType(userData.type);
 		setLoggedInUser(userData);
 		navigate("/dashboard");
 	};
 
 	const handleLogout = () => {
 		setIsLoggedIn(false);
-		setUserType("");
+		// setUserType("");
 		setLoggedInUser(null);
 		localStorage.removeItem("loggedInUserEmail");
 		navigate("/signin");
@@ -53,7 +54,7 @@ export const App = () => {
 
 	return (
 		<div>
-			<NavBar isLoggedIn={isLoggedIn} onLogout={handleLogout} user={user} userId={loggedInUser ? loggedInUser.id : null} />
+			<NavBar isLoggedIn={isLoggedIn} onLogout={handleLogout} user={loggedInUser} userId={loggedInUser ? loggedInUser.id : null} />
 
 			<Routes>
 				<Route path="/" element={<LandingPage />} />

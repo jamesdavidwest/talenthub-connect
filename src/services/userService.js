@@ -47,3 +47,12 @@ export const getUserById = (userId) => {
 			console.error("Error fetching user data:", error);
 		});
 };
+
+export const getAllUsersByGender = (gender_id) => {
+	return fetch(`http://localhost:8088/users?gender=${gender_id}`)
+		.then((res) => res.json())
+		.catch((error) => {
+			console.error("Error fetching user gender:", error)
+			throw error
+		})
+}

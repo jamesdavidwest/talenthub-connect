@@ -5,15 +5,11 @@ import { getUserByEmail } from "../../services/userService";
 
 export const SignIn = ({ onLogin }) => {
 	const [email, setEmail] = useState("jamesdavidwest@actor.com");
-
-	// eslint-disable-next-line no-unused-vars
 	const [errorMessage, setErrorMessage] = useState("");
-
 	const navigate = useNavigate();
 
 	const handleLogin = (e) => {
 		e.preventDefault();
-
 		if (!email) {
 			setErrorMessage("Please Enter Your Email Address");
 			return;
@@ -21,18 +17,19 @@ export const SignIn = ({ onLogin }) => {
 
 		getUserByEmail(email)
 			.then((foundUsers) => {
+				console.log("Found users:", foundUsers)
 				if (foundUsers.length === 1) {
 					const user = foundUsers[0];
+					localStorage.setItem("loggedInUserEmail", email)
 					localStorage.setItem(
 						"talenthub_user",
 						JSON.stringify({
 							id: user.id,
-							type: user.type,
+							type_id: user.type_id,
 						})
 					);
 
-					const previousLocation =
-						localStorage.getItem("previousLocation");
+					const previousLocation = localStorage.getItem("previousLocation");
 					navigate(previousLocation || "/dashboard");
 					onLogin(user);
 				} else {
@@ -41,15 +38,13 @@ export const SignIn = ({ onLogin }) => {
 			})
 			.catch((error) => {
 				console.error("Login failed:", error);
-				setErrorMessage(
-					"An error occured during login. Please try again later."
-				);
+				setErrorMessage("An error occured during login. Please try again later.");
 			});
 	};
 
 	useEffect(() => {
 		const isLoggedIn = localStorage.getItem("talenthub_user");
-		const isSignInPage = (window.location.pathname === "/signin");
+		const isSignInPage = window.location.pathname === "/signin";
 
 		if (isLoggedIn && !isSignInPage) {
 			const previousLocation = localStorage.getItem("previousLocation");
@@ -63,6 +58,7 @@ export const SignIn = ({ onLogin }) => {
 				<form className="form-login" onSubmit={handleLogin}>
 					<h1>TalentHub Connect</h1>
 					<h2>Please sign in</h2>
+					<div className="error-message">{errorMessage}</div>
 					<fieldset>
 						<div className="form-group">
 							<input
@@ -80,10 +76,7 @@ export const SignIn = ({ onLogin }) => {
 					</fieldset>
 					<fieldset>
 						<div className="form-group">
-							<button
-								className="login-btn btn-info"
-								type="submit"
-							>
+							<button className="login-btn btn-info" type="submit">
 								Sign in
 							</button>
 						</div>

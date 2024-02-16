@@ -3,6 +3,7 @@ import { ActorProfile } from "./ActorProfile";
 import { AgentProfile } from "./AgentProfile";
 import { getUserById } from "../../services/userService.js";
 import { useEffect, useState } from "react";
+// import { getAllGenders } from "../../services/genderService";
 
 // Make sure to pass the database prop to UserProfile component
 // <UserProfile user={user} database={database}
@@ -10,6 +11,7 @@ import { useEffect, useState } from "react";
 export const UserProfile = (database) => {
 	const { userId } = useParams();
 	const [user, setUser] = useState(null);
+	// const [gender, setGender] = useState(null)
 
 	useEffect(() => {
 		fetchUserData(userId);
@@ -19,8 +21,8 @@ export const UserProfile = (database) => {
 		getUserById(userId)
 			.then((userData) => {
 				console.log("User Data:", userData);
-
 				setUser(userData);
+				
 			})
 			.catch((error) => {
 				console.error("Error fetching user data:", error);
@@ -31,9 +33,9 @@ export const UserProfile = (database) => {
 		<div className="user-profile">
 			{user ? (
 				<div>
-					{user.type === "actor" ? (
+					{user.type_id === 1 ? (
 						<ActorProfile user={user} database={database} />
-					) : user.type === "agent" ? (
+					) : user.type_id === 2 ? (
 						<AgentProfile user={user} database={database} />
 					) : (
 						<p>No profile type found for user.</p>
