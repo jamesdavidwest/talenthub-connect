@@ -5,11 +5,13 @@ import { getAllMarkets } from "../../services/marketService";
 import { getAllStates } from "../../services/stateService";
 import { getAllGenders } from "../../services/genderService";
 import { useLocation } from "react-router-dom";
+import { getAllUsers, updateUserById } from "../../services/userService";
 
-export const EditUserProfile = ({ onSave, onCancel, type_id, userData }) => {
+export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 	const [genders, setGenders] = useState([]);
 	const [markets, setMarkets] = useState([]);
 	const [states, setStates] = useState([]);
+	const [agents, setAgents] = useState([]);
 	const [formData, setFormData] = useState({
 		fullName: "",
 		bio: "",
@@ -18,6 +20,8 @@ export const EditUserProfile = ({ onSave, onCancel, type_id, userData }) => {
 		stateId: "",
 		unionStatus: "",
 		genderId: "",
+		currentAgentUserId: [],
+		agentSearch: ""
 	});
 
 	const location = useLocation();
@@ -28,13 +32,33 @@ export const EditUserProfile = ({ onSave, onCancel, type_id, userData }) => {
 			bio: userData?.bio || "",
 			// TODO: Make sure this value is an array so that
 			// we don't have to wrap it when setting it.
-			primaryFocus: [userData?.primary_focus] || [],
+			primaryFocus: userData?.primary_focus || [],
 			marketId: userData?.market_id || "",
 			stateId: userData?.state_id || "",
 			unionStatus: userData?.union_status || "",
+			current_agent_user_id: userData?.current_agent_user_id || [],
 			genderId: userData?.gender_id || "",
 		});
+		const fetchAgents = async () => {
+			try {
+				const { agents } = await getAllUsers();
+				setAgents(agents);
+			} catch (error) {
+				console.error("fetchAgents no worky:", error);
+			}
+		};
+		fetchAgents();
 	}, [userData]);
+
+	const handleAgentSearch = (e) => {
+		const { value } = e.target;
+		setFormData({
+			...formData,
+			agentSearch: value,
+		});
+	};
+
+	const filteredAgents = agents ? agents.filter((agent) => agent.fullName.toLowerCase().includes(formData.agentSearch.toLowerCase())) : [];
 
 	useEffect(() => {
 		getAllData();
@@ -78,12 +102,21 @@ export const EditUserProfile = ({ onSave, onCancel, type_id, userData }) => {
 	};
 
 	const handleSave = async (e) => {
-		e.preventDefault();
 		try {
-			await onSave(formData);
+			await updateUserById(userData.id, {
+				fullName: formData.fullName,
+				bio: formData.bio,
+				primary_focus: formData.primaryFocus,
+				market_id: formData.marketId,
+				state_id: formData.stateId,
+				union_status: formData.unionStatus,
+				current_agent_user_id: formData.currentAgentUserId,
+				gender_id: formData.genderId,
+			});
 		} catch (error) {
 			console.error("Error saving user profile:", error);
 		}
+		e.preventDefault();
 	};
 
 	const handleCancel = (e) => {
@@ -190,6 +223,28 @@ export const EditUserProfile = ({ onSave, onCancel, type_id, userData }) => {
 							))}
 						</div>
 					</div>
+					<div className="form-group">
+						<label htmlFor="currentAgent">Current Agent</label>
+						{filteredAgents.length > 0 ? (
+							<ul>
+								{filteredAgents.map((agent) => (
+									<li key={agent.id}>{agent.fullName}</li>
+								))}
+							</ul>
+						) : (
+							<p>No current agent found.</p>
+						)}
+						
+					</div>
+					<div className="form-group">
+						<label htmlFor="agentSearch">Agent:</label>
+						<input type="text" id="agentSearch" name="agentSearch" value={formData.agentSearch} onChange={handleAgentSearch} />
+					</div>
+					<ul>
+						{filteredAgents.map((agent) => (
+							<li key={agent.id}>{agent.fullName}</li>
+						))}
+					</ul>
 					<div className="form-group">
 						<button type="submit">Save</button>
 						<button type="button" onClick={handleCancel}>

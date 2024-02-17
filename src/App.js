@@ -12,11 +12,16 @@ import { getUserByEmail } from "./services/userService.js";
 import { Messaging } from "./components/messaging/Messaging.js";
 import { EditUserProfile } from "./components/profiles/EditUserProfile.js";
 
+
+
+
+
 export const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	// const [userType, setUserType] = useState("");
 	const [loggedInUser, setLoggedInUser] = useState(null);
 	const navigate = useNavigate();
+
 
 	useEffect(() => {
 		const userEmail = localStorage.getItem("loggedInUserEmail");
@@ -24,9 +29,9 @@ export const App = () => {
 		if (userEmail) {
 			getUserByEmail(userEmail)
 				.then((users) => {
-					if (users.length > 0) {;
+					if (users.length > 0) {
 						setLoggedInUser(users[0]);
-						
+
 						setIsLoggedIn(true);
 						// setUserType(userData.type);
 					}
