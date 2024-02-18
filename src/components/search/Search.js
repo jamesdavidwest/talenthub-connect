@@ -25,7 +25,7 @@ export const Search = () => {
 				user.type_id.toLowerCase().includes(searchInput) ||
 				user.primary_focus.toLowerCase().includes(searchInput) ||
 				user.union_status.toLowerCase().includes(searchInput) ||
-				user.seeking.toLowerCase().includes(searchInput) ||
+				user.seeking_type_id === parseInt(searchInput) ||
 				user.gender.toLowerCase().includes(searchInput)
 		);
 
@@ -75,7 +75,7 @@ export const Search = () => {
 						</div>
 						<div>
 							<div>
-								<div className="user-card-info">{userCard.seeking === "Actor" ? "Seeking Talent" : userCard.seeking === "Agent" ? "Seeking Agent" : "Not Currently Seeking"}</div>
+								<div className="user-card-info">{userCard.seeking_type_id === 1 ? "Seeking Talent" : userCard.seeking_type_id === 2 ? "Seeking Agent" : "Not Currently Seeking"}</div>
 							</div>
 							<ul className="user-card-details">
 								<li>Primary Focus: {userCard.primary_focus}</li>

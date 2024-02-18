@@ -12,6 +12,7 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 	const [markets, setMarkets] = useState([]);
 	const [states, setStates] = useState([]);
 	const [agents, setAgents] = useState([]);
+	const [agentSearch, setAgentSearch] = useState("");
 	const [formData, setFormData] = useState({
 		fullName: "",
 		bio: "",
@@ -21,9 +22,9 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 		unionStatus: "",
 		genderId: "",
 		currentAgentUserId: [],
-		agentSearch: ""
+		seekingUserTypeId: "",
 	});
-
+	console.log("formdata 1st in flow:", formData);
 	const location = useLocation();
 
 	useEffect(() => {
@@ -36,8 +37,9 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 			marketId: userData?.market_id || "",
 			stateId: userData?.state_id || "",
 			unionStatus: userData?.union_status || "",
-			current_agent_user_id: userData?.current_agent_user_id || [],
+			currentAgentUserId: userData?.current_agent_user_id || "",
 			genderId: userData?.gender_id || "",
+			seekingUserTypeId: userData?.seeking_user_type_id || "",
 		});
 		const fetchAgents = async () => {
 			try {
@@ -52,13 +54,11 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 
 	const handleAgentSearch = (e) => {
 		const { value } = e.target;
-		setFormData({
-			...formData,
-			agentSearch: value,
-		});
+
+		setAgentSearch(value);
 	};
 
-	const filteredAgents = agents ? agents.filter((agent) => agent.fullName.toLowerCase().includes(formData.agentSearch.toLowerCase())) : [];
+	const filteredAgents = agents ? agents.filter((agent) => agent.fullName.toLowerCase().includes(agentSearch.toLowerCase())) : [];
 
 	useEffect(() => {
 		getAllData();
@@ -66,9 +66,9 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 
 	const getAllData = async () => {
 		try {
-			const [featchedMarkets, fetchedStates, fetchedGenders] = await Promise.all([getAllMarkets(), getAllStates(), getAllGenders()]);
+			const [fetchedMarkets, fetchedStates, fetchedGenders] = await Promise.all([getAllMarkets(), getAllStates(), getAllGenders()]);
 
-			setMarkets(featchedMarkets);
+			setMarkets(fetchedMarkets);
 			setStates(fetchedStates);
 			setGenders(fetchedGenders);
 		} catch (error) {
@@ -112,6 +112,7 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 				union_status: formData.unionStatus,
 				current_agent_user_id: formData.currentAgentUserId,
 				gender_id: formData.genderId,
+				seeking_user_type_id: formData.seekingUserTypeId,
 			});
 		} catch (error) {
 			console.error("Error saving user profile:", error);
@@ -187,19 +188,19 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 							))}
 						</select>
 					</div>
-					{type_id === "Actor" && (
+					{type_id === 1 && (
 						<div className="form-group">
-							<label htmlFor="unionStatus">Union Status</label>
-							<select id="unionStatus" name="unionStatus" value={formData.unionStatus} onChange={handleInputChange}>
+							<label htmlFor="actorUnionStatus">Union Status</label>
+							<select id="actorUnionStatus" name="unionStatus" value={formData.unionStatus} onChange={handleInputChange}>
 								<option value="Union">Union</option>
 								<option value="Non-Union">Non-Union</option>
 							</select>
 						</div>
 					)}
-					{type_id === "Agent" && (
+					{type_id === 2 && (
 						<div className="form-group">
-							<label htmlFor="unionStatus">Union Status</label>
-							<select id="unionStatus" name="unionStatus" value={formData.unionStatus} onChange={handleInputChange}>
+							<label htmlFor="agentUnionStatus">Union Status</label>
+							<select id="agentUnionStatus" name="unionStatus" value={formData.unionStatus} onChange={handleInputChange}>
 								<option value="Union">SAG-Franchised</option>
 								<option value="Non-Union">Non-Union</option>
 							</select>
@@ -225,20 +226,17 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 					</div>
 					<div className="form-group">
 						<label htmlFor="currentAgent">Current Agent</label>
-						{filteredAgents.length > 0 ? (
-							<ul>
-								{filteredAgents.map((agent) => (
-									<li key={agent.id}>{agent.fullName}</li>
-								))}
-							</ul>
-						) : (
-							<p>No current agent found.</p>
-						)}
-						
+						<ul id="currentAgent">
+							{filteredAgents.length > 0 ? (
+								filteredAgents.map((agent) => <li key={agent.id}>{agent.fullName}</li>)
+							) : (
+								<li>No current agent found.</li>
+							)}
+						</ul>
 					</div>
 					<div className="form-group">
 						<label htmlFor="agentSearch">Agent:</label>
-						<input type="text" id="agentSearch" name="agentSearch" value={formData.agentSearch} onChange={handleAgentSearch} />
+						<input type="text" id="agentSearch" name="agentSearch" value={agentSearch} onChange={handleAgentSearch} />
 					</div>
 					<ul>
 						{filteredAgents.map((agent) => (

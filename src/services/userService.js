@@ -20,10 +20,16 @@ export const getAllUsers = async () => {
 			throw new Error("getAllUsers failed to fetch all users:")
 		}
 		const users = await res.json()
-		const agents = users.filter(user => user.type_id === "Agent")
-		return agents
+
+		const agents = users.filter(user => user.type_id === 2)
+		const actors = users.filter(user => user.type_id === 1)
+		
+		const seekingType = users.filter(user => user.seeking_type_id)
+		
+		return { agents, seekingType, actors }
 	} catch (error) {
 		console.error("userService error fetching users", error)
+		throw error
 	}
 };
 
