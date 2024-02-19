@@ -15,21 +15,21 @@ export const createUser = (user) => {
 
 export const getAllUsers = async () => {
 	try {
-		const res = await fetch("http://localhost:8088/users")
+		const res = await fetch("http://localhost:8088/users");
 		if (!res.ok) {
-			throw new Error("getAllUsers failed to fetch all users:")
+			throw new Error("getAllUsers failed to fetch all users:");
 		}
-		const users = await res.json()
+		const users = await res.json();
 
-		const agents = users.filter(user => user.type_id === 2)
-		const actors = users.filter(user => user.type_id === 1)
-		
-		const seekingType = users.filter(user => user.seeking_type_id)
-		
-		return { agents, seekingType, actors }
+		const agents = users.filter((user) => user.type_id === 2);
+		const actors = users.filter((user) => user.type_id === 1);
+
+		const seekingType = users.filter((user) => user.seeking_type_id);
+
+		return { agents, seekingType, actors };
 	} catch (error) {
-		console.error("userService error fetching users", error)
-		throw error
+		console.error("userService error fetching users", error);
+		throw error;
 	}
 };
 
@@ -76,10 +76,24 @@ export const updateUserById = (userId, formData) => {
 		},
 		body: JSON.stringify(formData),
 	})
-	
 		.then((res) => res.json())
 		.catch((error) => {
 			console.error("From userService: Error updating profile", error);
 			throw error;
 		});
+};
+
+export const deleteAgentById = async (agentId) => {
+	try {
+		const res = await fetch(`http://localhost:8088/users/${agentId}`, {
+			method: "DELETE",
+		});
+		if (!res.ok) {
+			throw new Error("deleteAgentById failed to delete agent");
+		}
+		return true;
+	} catch (error) {
+		console.error("deleteAgentById error deleteing agent:", error);
+		return false;
+	}
 };

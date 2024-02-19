@@ -44,6 +44,11 @@
   button[type="button"]:hover {
     opacity: 0.8;
   }
+
+  .profile-saved-message {
+    color: green;
+    margin-bottom: 5px;
+}
   
   .gender-options {
     margin-top: 10px;
@@ -62,4 +67,31 @@
   .search-current-agent {
     list-style-type: none;
   }
+
+  .current-agent-group {
+    margin-bottom: 20px;
+}
+
+.current-agent-group > div {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.current-agent-group ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.current-agent-group ul li {
+    margin-bottom: 5px;
+}
+
+.current-agent-group ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+.current-agent-group ul li a:hover {
+    text-decoration: underline;
+}
   

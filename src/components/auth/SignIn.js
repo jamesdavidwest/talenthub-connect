@@ -25,7 +25,7 @@ export const SignIn = ({ onLogin }) => {
 						"talenthub_user",
 						JSON.stringify({
 							id: user.id,
-							type_id: user.type_id,
+							type_id: typeof user.type_id === 'number' ? user.type_id : parseInt(user.type_id),
 						})
 					);
 

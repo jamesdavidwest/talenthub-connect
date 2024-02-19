@@ -1,12 +1,15 @@
 import "./AgentProfile.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getUserById } from "../../services/userService";
+import { getUserById, getAllUsers } from "../../services/userService";
+import { getGenderById } from "../../services/genderService";
 
 export const AgentProfile = ({ user }) => {
 	const { userId } = useParams();
 	// const [market, setMarket] = useState(null);
 	const [agent, setAgent] = useState({});
+	const [actor, setActor] = useState([]);
+	const [gender, setGender] = useState({});
 
 	// useEffect(() => {
 	// 	if (user) {
@@ -18,7 +21,42 @@ export const AgentProfile = ({ user }) => {
 
 	useEffect(() => {
 		getUserById(userId).then((user) => setAgent(user));
-	}, [agent, userId]);
+	}, [userId]);
+
+	useEffect(() => {
+		// if (Object.keys(agent).length > 0) {
+		// 	getGenderById(agent.gender_id)
+		// 		.then((genderData) => setGender(genderData))
+		// 		.catch((error) => {
+		// 			console.error("Error fetching gender data:", error);
+		// 		});
+
+		// 	getAllUsers()
+		// 		.then((users) => {
+		// 			const actors = users.actors.filter((actor) => agent.current_actor_user_id.includes(actor.id));
+
+		// 			setActors(actors);
+		// 		})
+		getUserById(userId)
+		.then((user) => {
+			setAgent(user)
+
+			getAllUsers().then((users) => {
+				const actor = users.actors.find((actor) => actor.id === user.current_actor_user_id)
+				setActor(actor)
+			})
+
+			getGenderById(user.gender_id)
+			.then((genderData) => setGender(genderData))
+			.catch((error) => {
+				console.error("Error fetching gender data:", error)
+			})
+		
+				.catch((error) => {
+					console.error("Error fetching actors data:", error);
+				});
+		})
+	}, [userId]);
 
 	return (
 		<div className="agent-profile">
@@ -39,8 +77,13 @@ export const AgentProfile = ({ user }) => {
 				</div>
 
 				<div>
-					<strong>Gender:</strong> {agent.gender}
+					<strong>Gender:</strong> {gender.name}
 				</div>
+
+				<div>
+					<strong>Current Roster:</strong> {actor.fullName}
+				</div>
+
 				{/* <div>
 					<strong>Market:</strong> {market ? market.name : ""}
 				</div> */}

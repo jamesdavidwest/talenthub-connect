@@ -19,7 +19,7 @@ export const App = () => {
 	const [loggedInUser, setLoggedInUser] = useState(null);
 	const navigate = useNavigate();
 
-	useEffect(() => {
+	const fetchAndSetUser = () => {
 		const userEmail = localStorage.getItem("loggedInUserEmail");
 
 		if (userEmail) {
@@ -36,7 +36,15 @@ export const App = () => {
 					console.error("Error fetching user data:", error);
 				});
 		}
+	};
+
+	useEffect(() => {
+		fetchAndSetUser();
 	}, []);
+
+	window.addEventListener("loggedIn", () => {
+		fetchAndSetUser();
+	});
 
 	const handleLogin = (userData) => {
 		setIsLoggedIn(true);

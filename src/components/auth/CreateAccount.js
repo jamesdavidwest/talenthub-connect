@@ -10,13 +10,14 @@ export const CreateAccount = ({ setIsLoggedIn }) => {
 		state_id: "",
 		type_id: "",
 		fullName: "",
-		gender: "",
+		gender_id: null,
 		email: "",
-		headshot_url: "",
-		bio: "",
-		primary_focus: "",
-		seeking: "",
-		union_status: "",
+		headshot_url: null,
+		bio: null,
+		primary_focus: [],
+		seeking_type_id: null,
+		current_agent_user_id: "",
+		union_status: null,
 	});
 
 	const navigate = useNavigate();
@@ -24,6 +25,7 @@ export const CreateAccount = ({ setIsLoggedIn }) => {
 	const registerNewUser = () => {
 		createUser(user).then((createdUser) => {
 			if (createdUser.hasOwnProperty("id")) {
+				localStorage.setItem("loggedInUserEmail", createdUser.email);
 				localStorage.setItem(
 					"talenthub_user",
 					JSON.stringify({
@@ -34,6 +36,8 @@ export const CreateAccount = ({ setIsLoggedIn }) => {
 
 				setIsLoggedIn(true);
 				navigate("/dashboard");
+
+				window.dispatchEvent(new Event('loggedIn'));
 			}
 		});
 	};
@@ -54,7 +58,7 @@ export const CreateAccount = ({ setIsLoggedIn }) => {
 	const updateUser = (evt) => {
 		const copy = { ...user };
 		if (evt.target.name === "type_id") {
-			copy.type_id = evt.target.value;
+			copy.type_id = parseInt(evt.target.value);
 		} else {
 			copy[evt.target.id] = evt.target.value;
 		}
@@ -81,34 +85,17 @@ export const CreateAccount = ({ setIsLoggedIn }) => {
 				</fieldset>
 				<fieldset>
 					<div className="form-group">
-						<input
-							onChange={updateUser}
-							type="email"
-							id="email"
-							className="form-control"
-							placeholder="Email address"
-							required
-						/>
+						<input onChange={updateUser} type="email" id="email" className="form-control" placeholder="Email address" required />
 					</div>
 				</fieldset>
 				<fieldset>
 					<div className="form-group">
 						<label>
-							<input
-								onChange={updateUser}
-								type="radio"
-								name="type_id"
-								value="Actor"
-							/>
+							<input onChange={updateUser} type="radio" name="type_id" value="1" />
 							Actor{" "}
 						</label>
 						<label>
-							<input
-								onChange={updateUser}
-								type="radio"
-								name="type_id"
-								value="Agent"
-							/>
+							<input onChange={updateUser} type="radio" name="type_id" value="2" />
 							Agent{" "}
 						</label>
 					</div>

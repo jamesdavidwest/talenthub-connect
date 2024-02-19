@@ -7,12 +7,15 @@ import { getAllGenders } from "../../services/genderService";
 import { useLocation } from "react-router-dom";
 import { getAllUsers, updateUserById } from "../../services/userService";
 
-export const EditUserProfile = ({ onCancel, type_id, userData }) => {
+export const EditUserProfile = ({ onCancel, userData }) => {
 	const [genders, setGenders] = useState([]);
 	const [markets, setMarkets] = useState([]);
 	const [states, setStates] = useState([]);
 	const [agents, setAgents] = useState([]);
 	const [agentSearch, setAgentSearch] = useState("");
+	const [filteredAgents, setFilteredAgents] = useState([]);
+	const [profileSaved, setProfileSaved] = useState(false);
+	const [changesPending, setChangesPending] = useState(false);
 	const [formData, setFormData] = useState({
 		fullName: "",
 		bio: "",
@@ -21,16 +24,17 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 		stateId: "",
 		unionStatus: "",
 		genderId: "",
-		currentAgentUserId: [],
+		currentAgentUserId: "",
 		seekingUserTypeId: "",
 	});
-	console.log("formdata 1st in flow:", formData);
 	const location = useLocation();
 
 	useEffect(() => {
+		console.log("formData", formData);
 		if (userData) {
 			setFormData({
 				fullName: userData?.fullName || "",
+				headshotUrl: userData?.headshot_url || "",
 				bio: userData?.bio || "",
 				// TODO: Make sure this value is an array so that
 				// we don't have to wrap it when setting it.
@@ -38,7 +42,7 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 				marketId: userData?.market_id || "",
 				stateId: userData?.state_id || "",
 				unionStatus: userData?.union_status || "",
-				currentAgentUserId: userData?.current_agent_user_id || [],
+				currentAgentUserId: userData?.current_agent_user_id || "",
 				genderId: userData?.gender_id || "",
 				seekingUserTypeId: userData?.seeking_user_type_id || "",
 			});
@@ -65,10 +69,23 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 			...formData,
 			currentAgentUserId: selectedAgent.id,
 		});
-		setAgentSearch(selectedAgent.fullName);
+		setAgentSearch("");
 	};
 
-	const filteredAgents = agents ? agents.filter((agent) => agent.fullName.toLowerCase().includes(agentSearch.toLowerCase())) : [];
+	const handleDeleteAgent = (agentId) => {
+		const confirmAgentDelete = window.confirm("Are you sure you want to delete this agent?");
+		if (confirmAgentDelete) {
+			const updatedAgents = agents.filter((agent) => agent.id !== agentId);
+
+			setAgents(updatedAgents);
+			setChangesPending(true);
+		}
+	};
+
+	useEffect(() => {
+		const filteredAgents = agents ? agents.filter((agent) => agent.fullName.toLowerCase().includes(agentSearch.toLowerCase())) : [];
+		setFilteredAgents(filteredAgents);
+	}, [agentSearch, agents]);
 
 	useEffect(() => {
 		getAllData();
@@ -87,13 +104,22 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 	};
 
 	const handleInputChange = (e) => {
-		const { name, value } = e.target;
+		let { name, value } = e.target;
 
-		setFormData({
-			...formData,
-			[name]: value,
-		});
-	};
+		if (name === "seekingUserTypeId") {
+			if (value === "notSeeking") {
+				value = "";
+		} else {
+			value = value === "seekingAgent" ? "1" : "2";
+		}
+	}
+
+			setFormData({
+				...formData,
+				[name]: value,
+			});
+		}
+	
 
 	const handleCheckboxChange = (e) => {
 		const { name, value } = e.target;
@@ -113,18 +139,24 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 
 	const handleSave = async (e) => {
 		e.preventDefault();
+		// const confirmation = window.confirm("Are you sure you want to save changes to your profile?");
+		// if (confirmation) {
 		try {
+			const currentAgentUserId = formData.currentAgentUserId;
 			await updateUserById(userData.id, {
 				fullName: formData.fullName,
+				headshot_url: formData.headshotUrl,
 				bio: formData.bio,
 				primary_focus: formData.primaryFocus,
 				market_id: formData.marketId,
 				state_id: formData.stateId,
 				union_status: formData.unionStatus,
-				current_agent_user_id: [formData.currentAgentUserId],
+				current_agent_user_id: currentAgentUserId,
 				gender_id: formData.genderId,
 				seeking_user_type_id: formData.seekingUserTypeId,
 			});
+			setChangesPending(false);
+			setProfileSaved(true);
 		} catch (error) {
 			console.error("Error saving user profile:", error);
 		}
@@ -137,6 +169,8 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 		}
 	};
 
+	// const currentAgent = fsilteredAgents.length ? filteredAgents.find((agent) => formData.currentAgentUserId.includes(agent.id)) : {};
+
 	return (
 		<div className="edit-user-profile">
 			{userData ? (
@@ -145,6 +179,10 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 					<div className="form-group">
 						<label htmlFor="fullName">Full Name</label>
 						<input type="text" id="fullName" name="fullName" value={formData.fullName} onChange={handleInputChange} />
+					</div>
+					<div className="form-group">
+						<label htmlFor="headshotUrl">Headshot URL</label>
+						<input type="text" id="headshotUrl" name="headshotUrl" value={formData.headshotUrl} onChange={handleInputChange} />
 					</div>
 					<div className="form-group">
 						<label htmlFor="bio">Bio</label>
@@ -198,7 +236,7 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 							))}
 						</select>
 					</div>
-					{type_id === 1 && (
+					{userData.type_id === 1 && (
 						<div className="form-group">
 							<label htmlFor="actorUnionStatus">Union Status</label>
 							<select id="actorUnionStatus" name="unionStatus" value={formData.unionStatus} onChange={handleInputChange}>
@@ -207,7 +245,7 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 							</select>
 						</div>
 					)}
-					{type_id === 2 && (
+					{userData.type_id === 2 && (
 						<div className="form-group">
 							<label htmlFor="agentUnionStatus">Union Status</label>
 							<select id="agentUnionStatus" name="unionStatus" value={formData.unionStatus} onChange={handleInputChange}>
@@ -234,13 +272,63 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 							))}
 						</div>
 					</div>
+
 					<div className="form-group">
+						<div>Seeking Status:</div>
+						<div>
+							{userData.type_id === 2 && (
+								<label htmlFor="seekingAgent">
+									<input
+										type="radio"
+										id="seekingAgent"
+										name="seekingUserTypeId"
+										value="1"
+										checked={formData.seekingUserTypeId === "1"}
+										onChange={handleInputChange}
+									/>
+									Actor
+								</label>
+							)}
+							{userData.type_id === 1 && (
+								<label htmlFor="seekingActor">
+									<input
+										type="radio"
+										id="seekingActor"
+										name="seekingUserTypeId"
+										value="2"
+										checked={formData.seekingUserTypeId === "2"}
+										onChange={handleInputChange}
+									/>
+									Agent
+								</label>
+							)}
+							<label htmlFor="notSeeking">
+								<input
+									type="radio"
+									id="notSeeking"
+									name="seekingUserTypeId"
+									value="notSeeking"
+									checked={formData.seekingUserTypeId === ""}
+									onChange={handleInputChange}
+								/>
+								Not Seeking
+							</label>
+						</div>
+					</div>
+
+					<div className="form-group current-agent-group">
 						<div>Current Agent</div>
+
 						<ul id="currentAgent" className="search-current-agent">
 							{filteredAgents.length > 0 ? (
 								filteredAgents
-									.filter((agent) => formData.currentAgentUserId.includes(agent.id))
-									.map((agent) => <li key={agent.id}><a href={`/agentprofile/${agent.id}`}>{agent.fullName}</a></li>)
+									.filter((agent) => formData.currentAgentUserId === agent.id)
+									.map((agent) => (
+										<li key={agent.id}>
+											<a href={`/agentprofile/${agent.id}`}>{agent.fullName}</a>
+											<button onClick={() => handleDeleteAgent(agent.id)}>Delete Agent</button>
+										</li>
+									))
 							) : (
 								<li key="noAgent">No current agent found.</li>
 							)}
@@ -260,6 +348,8 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 						</ul>
 					)}
 					<div className="form-group">
+						{changesPending && <p className="changes-pending-message">Changed Pending - Please Save to Apply</p>}
+						{profileSaved && <p className="profile-saved-message">Profile Saved!</p>}
 						<button type="submit">Save</button>
 						<button type="button" onClick={handleCancel}>
 							Cancel
@@ -271,4 +361,4 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 			)}
 		</div>
 	);
-};
+			}
