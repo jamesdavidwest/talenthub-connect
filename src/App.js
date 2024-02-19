@@ -11,17 +11,13 @@ import { UserProfile } from "./components/profiles/UserProfile.js";
 import { getUserByEmail } from "./services/userService.js";
 import { Messaging } from "./components/messaging/Messaging.js";
 import { EditUserProfile } from "./components/profiles/EditUserProfile.js";
-
-
-
-
+import { AgentProfile } from "./components/profiles/AgentProfile.js";
 
 export const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	// const [userType, setUserType] = useState("");
 	const [loggedInUser, setLoggedInUser] = useState(null);
 	const navigate = useNavigate();
-
 
 	useEffect(() => {
 		const userEmail = localStorage.getItem("loggedInUserEmail");
@@ -68,11 +64,10 @@ export const App = () => {
 				<Route path="/messages" element={<Messaging />} />
 				<Route path="/signin" element={<SignIn onLogin={handleLogin} />} />
 				<Route path="/createaccount" element={<CreateAccount setIsLoggedIn={setIsLoggedIn} />} />
-				<Route path="/userprofile" element={<UserProfile user={loggedInUser} />}>
-					<Route path=":userId" element={<UserProfile user={loggedInUser} />} />
-				</Route>
+				<Route path="/userprofile/:userId" element={<UserProfile user={loggedInUser} />}></Route>
 				<Route path="/editprofile/:userId" element={<EditUserProfile userData={loggedInUser} />} />
 				<Route path="/signout" element={<SignOut />} />
+				<Route path="/agentprofile/:userId" element={<AgentProfile user={loggedInUser} />} />
 			</Routes>
 		</div>
 	);

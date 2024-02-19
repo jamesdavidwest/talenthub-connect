@@ -1,34 +1,28 @@
 import { useEffect, useState } from "react";
 import "./ActorProfile.css";
-import {getGenderById} from "../../services/genderService";
+import { getGenderById } from "../../services/genderService";
 
 export const ActorProfile = ({ user }) => {
-	const [gender, setGender] = useState(null)
+	const [gender, setGender] = useState(null);
 
 	useEffect(() => {
 		if (user && user.gender_id) {
 			getGenderById(user.gender_id)
 				.then((genderData) => {
-					setGender(genderData.name)
+					setGender(genderData.name);
 				})
 				.catch((error) => {
-					console.error("Error fetching gender data:", error)
-				})
+					console.error("Error fetching gender data:", error);
+				});
 		}
-	}, [user])
+	}, [user]);
 
 	return (
 		<div className="actor-profile">
-			{user.headshot_url && (
-				<img
-					className="headshot-image"
-					src={user.headshot_url}
-					alt="Main Headshot"
-				/>
-			)}
+			{user.headshot_url && <img className="headshot-image" src={user.headshot_url} alt="Main Headshot" />}
 
 			<div className="actor-profile-details">
-				<h2 className="">{user.fullName}</h2>
+				<h2 className="user-profile-name">{user.fullName}</h2>
 				<div>
 					<strong>Bio:</strong> {user.bio}
 				</div>

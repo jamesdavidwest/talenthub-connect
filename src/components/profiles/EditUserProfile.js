@@ -28,19 +28,21 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 	const location = useLocation();
 
 	useEffect(() => {
-		setFormData({
-			fullName: userData?.fullName || "",
-			bio: userData?.bio || "",
-			// TODO: Make sure this value is an array so that
-			// we don't have to wrap it when setting it.
-			primaryFocus: userData?.primary_focus || [],
-			marketId: userData?.market_id || "",
-			stateId: userData?.state_id || "",
-			unionStatus: userData?.union_status || "",
-			currentAgentUserId: userData?.current_agent_user_id || "",
-			genderId: userData?.gender_id || "",
-			seekingUserTypeId: userData?.seeking_user_type_id || "",
-		});
+		if (userData) {
+			setFormData({
+				fullName: userData?.fullName || "",
+				bio: userData?.bio || "",
+				// TODO: Make sure this value is an array so that
+				// we don't have to wrap it when setting it.
+				primaryFocus: userData?.primary_focus || [],
+				marketId: userData?.market_id || "",
+				stateId: userData?.state_id || "",
+				unionStatus: userData?.union_status || "",
+				currentAgentUserId: userData?.current_agent_user_id || [],
+				genderId: userData?.gender_id || "",
+				seekingUserTypeId: userData?.seeking_user_type_id || "",
+			});
+		}
 		const fetchAgents = async () => {
 			try {
 				const { agents } = await getAllUsers();
@@ -56,6 +58,14 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 		const { value } = e.target;
 
 		setAgentSearch(value);
+	};
+
+	const handleSelectedAgent = (selectedAgent) => {
+		setFormData({
+			...formData,
+			currentAgentUserId: selectedAgent.id,
+		});
+		setAgentSearch(selectedAgent.fullName);
 	};
 
 	const filteredAgents = agents ? agents.filter((agent) => agent.fullName.toLowerCase().includes(agentSearch.toLowerCase())) : [];
@@ -102,6 +112,7 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 	};
 
 	const handleSave = async (e) => {
+		e.preventDefault();
 		try {
 			await updateUserById(userData.id, {
 				fullName: formData.fullName,
@@ -110,14 +121,13 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 				market_id: formData.marketId,
 				state_id: formData.stateId,
 				union_status: formData.unionStatus,
-				current_agent_user_id: formData.currentAgentUserId,
+				current_agent_user_id: [formData.currentAgentUserId],
 				gender_id: formData.genderId,
 				seeking_user_type_id: formData.seekingUserTypeId,
 			});
 		} catch (error) {
 			console.error("Error saving user profile:", error);
 		}
-		e.preventDefault();
 	};
 
 	const handleCancel = (e) => {
@@ -225,12 +235,14 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 						</div>
 					</div>
 					<div className="form-group">
-						<label htmlFor="currentAgent">Current Agent</label>
-						<ul id="currentAgent">
+						<div>Current Agent</div>
+						<ul id="currentAgent" className="search-current-agent">
 							{filteredAgents.length > 0 ? (
-								filteredAgents.map((agent) => <li key={agent.id}>{agent.fullName}</li>)
+								filteredAgents
+									.filter((agent) => formData.currentAgentUserId.includes(agent.id))
+									.map((agent) => <li key={agent.id}><a href={`/agentprofile/${agent.id}`}>{agent.fullName}</a></li>)
 							) : (
-								<li>No current agent found.</li>
+								<li key="noAgent">No current agent found.</li>
 							)}
 						</ul>
 					</div>
@@ -238,11 +250,15 @@ export const EditUserProfile = ({ onCancel, type_id, userData }) => {
 						<label htmlFor="agentSearch">Agent:</label>
 						<input type="text" id="agentSearch" name="agentSearch" value={agentSearch} onChange={handleAgentSearch} />
 					</div>
-					<ul>
-						{filteredAgents.map((agent) => (
-							<li key={agent.id}>{agent.fullName}</li>
-						))}
-					</ul>
+					{agentSearch && (
+						<ul className="search-current-agent">
+							{filteredAgents.map((agent) => (
+								<li key={agent.id} onClick={() => handleSelectedAgent(agent)}>
+									{agent.fullName}
+								</li>
+							))}
+						</ul>
+					)}
 					<div className="form-group">
 						<button type="submit">Save</button>
 						<button type="button" onClick={handleCancel}>

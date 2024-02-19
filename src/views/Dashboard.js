@@ -55,7 +55,7 @@ export const Dashboard = () => {
 				</ul>
 				<ul>
 					<li>
-						<Link to={`/messages/${loggedInUser.id}`}>Messages</Link>
+						<Link to={`/messages`}>Messages</Link>
 					</li>
 				</ul>
 				<ul>

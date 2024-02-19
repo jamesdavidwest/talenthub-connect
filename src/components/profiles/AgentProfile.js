@@ -1,42 +1,49 @@
 import "./AgentProfile.css";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { getUserById } from "../../services/userService";
 
-export const AgentProfile = ({ user, database }) => {
-	const [market, setMarket] = useState(null);
+export const AgentProfile = ({ user }) => {
+	const { userId } = useParams();
+	// const [market, setMarket] = useState(null);
+	const [agent, setAgent] = useState({});
+
+	// useEffect(() => {
+	// 	if (user) {
+	// 		const foundMarket = markets.find((market) => market.id === user.market_id);
+
+	// 		setMarket(foundMarket);
+	// 	}
+	// }, [user]);
 
 	useEffect(() => {
-		const foundMarket = database.markets.find(
-			(market) => market.id === user.market_id
-		);
-		setMarket(foundMarket);
-	}, [user.market_id, database.markets]);
+		getUserById(userId).then((user) => setAgent(user));
+	}, [agent, userId]);
 
 	return (
 		<div className="agent-profile">
-			<h2>Agent Profile</h2>
+			{agent.headshot_url && <img className="headshot-image" src={agent.headshot_url} alt="Main Headshot" />}
 			<div>
-				<strong>Name:</strong> {user.fullName}
-			</div>
-			<div>
-				<strong>Bio:</strong> {user.bio}
-			</div>
-			<div>
-				<strong>Seeking:</strong> {user.seeking}
-			</div>
-			<div>
-				<strong>Primary Focus:</strong> {user.primary_focus}
-			</div>
-			<div>
-				<strong>Union Status:</strong> {user.union_status}
-			</div>
-			<div>
-				<strong>Headshot:</strong> {user.headshot_url}
-			</div>
-			<div>
-				<strong>Gender:</strong> {user.gender}
-			</div>
-			<div>
-				<strong>Market:</strong> {market ? market.name : ""}
+				<h2 className="user-profile-name">{agent.fullName}</h2>
+				<div>
+					<strong>Bio:</strong> {agent.bio}
+				</div>
+				<div>
+					<strong>Seeking:</strong> {agent.seeking}
+				</div>
+				<div>
+					<strong>Primary Focus:</strong> {agent.primary_focus}
+				</div>
+				<div>
+					<strong>Union Status:</strong> {agent.union_status}
+				</div>
+
+				<div>
+					<strong>Gender:</strong> {agent.gender}
+				</div>
+				{/* <div>
+					<strong>Market:</strong> {market ? market.name : ""}
+				</div> */}
 			</div>
 		</div>
 	);
